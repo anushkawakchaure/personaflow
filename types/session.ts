@@ -11,6 +11,13 @@
   | "wishlist"
   | "apply_coupon";
 
+export type ShopperState =
+  | "browser"
+  | "comparer"
+  | "discount_seeker"
+  | "cart_abandoner"
+  | "loyal_customer";
+
 export interface SessionEvent {
   id: string;
   type: EventType;
@@ -24,9 +31,9 @@ export interface Session {
   visitorId?: string;
   customerName?: string;
   isReturningCustomer?: boolean;
-  startedAt: string;         // ✅ now consistent
+  startedAt: string;
   events: SessionEvent[];
-  createdAt?: string;        // fallback
+  createdAt?: string;
 }
 
 export interface ClassificationResult {
