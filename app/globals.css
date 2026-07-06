@@ -1,0 +1,53 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Dark theme (default) */
+  :root {
+    --color-bg: #0A0A0B;
+    --color-surface: #131316;
+    --color-surface-raised: #1B1B1F;
+    --color-surface-hover: #202024;
+    --color-border: #232327;
+    --color-border-subtle: #1B1B1F;
+    --color-text-primary: #F2F2F4;
+    --color-text-secondary: #94949C;
+    --color-text-tertiary: #5C5C63;
+    --color-accent: #5B8DEF;
+    --color-accent-dim: #3A5FA8;
+    --color-accent-soft: rgba(91, 141, 239, 0.12);
+    --color-state-browser: #7C8AA5;
+    --color-state-comparer: #4FA8D8;
+    --color-state-discount: #E0A93E;
+    --color-state-abandoner: #D8654F;
+    --color-state-loyal: #4FBF8B;
+  }
+
+  /* Light theme */
+  .light {
+    --color-bg: #f8f9fa;
+    --color-surface: #ffffff;
+    --color-surface-raised: #f1f3f5;
+    --color-surface-hover: #e9ecef;
+    --color-border: #dee2e6;
+    --color-border-subtle: #ced4da;
+    --color-text-primary: #212529;
+    --color-text-secondary: #495057;
+    --color-text-tertiary: #6c757d;
+    --color-accent: #3b6bd6;
+    --color-accent-dim: #2a4fa0;
+    --color-accent-soft: rgba(59, 107, 214, 0.12);
+    --color-state-browser: #6c7a8a;
+    --color-state-comparer: #3a8fb8;
+    --color-state-discount: #c49a2e;
+    --color-state-abandoner: #c04d3a;
+    --color-state-loyal: #3a9f73;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    transition: background 0.2s, color 0.2s;
+  }
+}
