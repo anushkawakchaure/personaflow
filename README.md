@@ -1,31 +1,46 @@
-# Personalization Rules Engine — Frontend
+# PersonaFlow — Ecommerce Personalization Rules Engine
 
-A frontend-only SaaS dashboard for classifying ecommerce shoppers into five
-behavioral states, using mock data and a client-side rule-based classifier.
-No backend, no OpenAI, no Supabase — everything here runs in the browser
-against static mock data, and every nav item is a real, working page.
+A full‑stack SaaS dashboard for classifying ecommerce shoppers into five behavioral states (Browser, Comparer, Discount Seeker, Cart Abandoner, Loyal Customer).  
+It combines a **real‑time rule engine**, **Supabase persistence**, **authentication**, **AI‑powered explanations**, and a **command palette**.
 
-## Stack
+## 🌟 Features
 
-- Next.js 15 (App Router)
-- React 19 + TypeScript
-- Tailwind CSS
+- **Live shopper classification** – event streams → deterministic rule engine → state + confidence + evidence.
+- **Score transparency** – see the score of every state, not just the winner.
+- **Simulator** – add/remove events to any session and watch the classification update instantly.
+- **Animated customer journey** – replay a session’s events with a speed‑controlled scrubber.
+- **AI‑powered stories** – one‑click generation of natural‑language explanations (OpenAI).
+- **Command palette (⌘K)** – jump to any page or session instantly.
+- **Rule editor** – tweak classifier weights live; the Dashboard, Sessions, and Insights pages react immediately.
+- **Insights** – aggregate stats, distribution charts, and a conversion funnel.
+- **Authentication** – sign up / sign in with Supabase Auth.
+- **Multi‑tenant ready** – each user can have their own data (scoped by `user_id`).
+- **Real database** – all sessions and events stored in Supabase (PostgreSQL).
+- **Tests** – unit tests for the classifier and API routes.
+- **Demo account** – one‑click login with `demo@personaflow.com` / `demopassword123`.
 
-## Getting started
+  
+## 🛠️ Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Frontend**: React 19 + TypeScript, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Auth, Realtime)
+- **AI**: OpenAI API (optional, for story generation)
+- **State**: React Context (client‑side store)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18.18+
+- A Supabase account (free tier works)
+- (Optional) An OpenAI API key for AI stories
+
+### 1. Clone the repository
 
 ```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-To build and run a production bundle instead:
-
-```bash
-npm run build
-npm run start
-```
+git clone https://github.com/anushkawakchoure/personaflow.git
+cd personaflow
 
 ## Pages
 
@@ -44,44 +59,98 @@ npm run start
 All four pages share one client-side store (`lib/store.tsx`), so simulator
 edits and rule-weight changes are visible everywhere without a page reload.
 
+Database Schema
+sessions
+
+id (UUID) – primary key
+
+visitor_id (text) – customer identifier
+
+user_id (UUID) – references auth.users (multi‑tenant)
+
+created_at (timestamptz)
+
+updated_at (timestamptz)
+
+is_returning_customer (boolean)
+
+events
+
+id (UUID) – primary key
+
+session_id (UUID) – references sessions
+
+type (text) – event type (e.g., view_product, purchase)
+
+timestamp (timestamptz)
+
+metadata (JSONB) – additional event data
+
+classifications
+
+id (UUID) – primary key
+
+session_id (UUID) – references sessions
+
+state (text) – classified shopper state
+
+confidence (float) – confidence score (0–100)
+
+evidence (JSONB) – supporting evidence
+
+created_at (timestamptz)
+
 ## How it's organized
 
 ```
 app/
-  layout.tsx          Root layout — wraps everything in StoreProvider + Sidebar
-  page.tsx             Dashboard page
-  sessions/page.tsx    Sessions table page
-  rules/page.tsx       Rules editor page
-  insights/page.tsx    Insights/analytics page
-  globals.css          Tailwind entrypoint + a few global resets
+  (public)/           # landing, login, signup (no sidebar)
+  api/                # Supabase API routes (sessions, explain, seed)
+  dashboard/          # main authenticated dashboard
+  sessions/           # sortable/filterable table
+  rules/              # weight sliders + live distribution
+  insights/           # stats, funnel, event breakdown
+  settings/           # user preferences (theme, auto‑save)
+  layout.tsx          # root layout with sidebar + providers
+  globals.css         # global styles + dark/light theme
+
 components/
-  Sidebar.tsx          Left nav — real Next.js links, active route highlighted
-  Header.tsx           Reusable top bar (title, optional search, optional actions)
-  SessionCard.tsx      One card in the session list
-  SessionList.tsx      Scrollable, searchable list of session cards
-  EventTimeline.tsx    Vertical timeline of a session's raw events
-  ClassificationPanel.tsx  Verdict, confidence ring, evidence, recommended action
-  SimulatorPanel.tsx   Add/remove events, reset a session
-  StateBadge.tsx        Reusable colored badge for a shopper state
-  ConfidenceRing.tsx    Reusable circular confidence gauge
-  EmptyState.tsx        Generic empty state
-  LoadingState.tsx      Skeleton loading states for list + detail panel
+  Sidebar.tsx         # navigation with auth status
+  Header.tsx          # top bar with search
+  SessionCard.tsx     # session card with avatar + returning badge
+  SessionList.tsx     # scrollable, filterable list
+  EventTimeline.tsx   # animated customer journey
+  ClassificationPanel.tsx  # verdict, confidence ring, evidence, score bars
+  SimulatorPanel.tsx  # add/remove events, reset
+  CommandPalette.tsx  # ⌘K global search
+  ProtectedRoute.tsx  # authentication guard
+  StateBadge.tsx      # colored shopper state badge
+  ConfidenceRing.tsx  # circular confidence gauge
+  LayoutContent.tsx   # conditionally hides sidebar on public routes
+
 lib/
-  store.tsx             App-wide client store: sessions, selection, rule weights
-  mock-data.ts         9 mock sessions covering all five shopper states
-  classifier.ts         Rule-based classifier: events + weights in, ClassificationResult out
-  utils.ts              cn() helper, state/event display metadata, time formatting
+  store.tsx           # global state (sessions, weights, selection)
+  auth.tsx            # Supabase authentication context
+  classifier.ts       # rule engine
+  supabase.ts         # Supabase client
+  theme.tsx           # dark/light mode
+  mock-data.ts        # 9 mock sessions for seeding
+  utils.ts            # helpers (cn(), time formatting, labels)
+
 types/
-  session.ts            Shared TypeScript interfaces, incl. RuleWeights
+  session.ts          # TypeScript interfaces
+
+__tests__/
+  classifier.test.ts  # unit tests for classifier
+  api.test.ts         # API route smoke tests
 ```
 
 ## How classification works right now
 
-`lib/classifier.ts` tallies each session's events, scores all five shopper
-states with independent weighted formulas, and returns whichever state
-scores highest, normalized into a 0–100 confidence value. The weights are no
-longer hardcoded constants — they live in `lib/store.tsx` as shared state,
-default to `DEFAULT_RULE_WEIGHTS`, and can be tuned live from the Rules page.
+The classifier tallies event counts and applies weighted formulas (defined in lib/classifier.ts). Each of the five states gets a score, and the highest wins. Weights are stored in the client‑side store and can be tweaked live on the Rules page.
+
+Scores are normalized to 0–100, and the panel shows a horizontal bar for each state – so you can see why a session wasn’t classified as something else.
+
 
 The five states:
 
@@ -97,19 +166,5 @@ Try the simulator panel on any session — adding a `purchase` event to a
 and drag the Cart Abandoner weights down — watch the Insights funnel and
 distribution chart shift in response.
 
-## What to build next
 
-1. **API layer** — a `/api/sessions` route (or a real backend) to replace
-   `lib/mock-data.ts`, plus persistence for simulator edits and rule weights.
-2. **Real event ingestion** — a tracking snippet or webhook that pushes live
-   `SessionEvent`s in, instead of the hand-written mock array.
-3. **LLM-assisted classification** — swap or augment `classifySession()`
-   with an OpenAI call for nuanced cases the rule engine scores as a close
-   tie between two states, using the same evidence/explanation shape so the
-   UI doesn't need to change.
-4. **Supabase** — store sessions, events, classification history, and rule
-   weight versions so the dashboard reflects real customer data over time.
-5. **Auth + multi-tenant** — scope sessions to a logged-in merchant account.
-6. **Tests** — unit tests for `classifySession()` covering edge cases
-   (empty sessions, ties, conflicting signals like cart abandonment + purchase).
 
