@@ -36,12 +36,30 @@ It combines a **real‑time rule engine**, **Supabase persistence**, **authentic
 - A Supabase account (free tier works)
 - (Optional) An OpenAI API key for AI stories
 
-### 1. Clone the repository
+Clone the repository
 
 ```bash
 git clone https://github.com/anushkawakchoure/personaflow.git
 cd personaflow
 
+install dependencies
+npm install
+
+Set up environment variables
+Create a .env.local file in the root with:
+
+env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+OPENAI_API_KEY=your_openai_key   # optional
+
+Run the development server
+bash
+npm run dev
+Open http://localhost:3000.
+
+Set up the Supabase database
+Run the SQL from supabase_setup.sql (included in the repo) in your Supabase SQL Editor. This creates the sessions, events, and classifications tables.
 ## Pages
 
 - **Dashboard** (`/`) — session list + detail view: event timeline,
@@ -165,6 +183,16 @@ Try the simulator panel on any session — adding a `purchase` event to a
 "Loyal Customer" since the classifier re-runs on every render. Or open Rules
 and drag the Cart Abandoner weights down — watch the Insights funnel and
 distribution chart shift in response.
+
+
+Live Demo
+Live URL: https://personaflow-engine.vercel.app
+
+Demo Account (click the button on the login page):
+
+Email: demo@personaflow.com
+
+Password: demopassword123
 
 
 
