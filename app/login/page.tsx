@@ -24,6 +24,18 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoLogin = () => {
+    setEmail("demo@personaflow.com");
+    setPassword("demopassword123");
+    // Auto-submit after a tiny delay to let state update
+    setTimeout(() => {
+      const form = document.querySelector('form');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-bg via-surface to-bg">
       <div className="bg-surface/80 backdrop-blur-sm p-8 rounded-2xl border border-border shadow-2xl w-full max-w-md">
@@ -31,6 +43,14 @@ export default function LoginPage() {
           <Sparkles className="w-6 h-6 text-accent" />
           <h1 className="text-2xl font-semibold text-text-primary">PersonaFlow</h1>
         </div>
+
+        {/* Demo credentials note */}
+        <div className="mb-4 p-3 bg-accent/5 border border-accent/20 rounded-lg text-center">
+          <p className="text-xs text-text-secondary">
+            🚀 <strong>Demo:</strong> demo@personaflow.com / demopassword123
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm text-text-secondary mb-1">Email</label>
@@ -53,12 +73,22 @@ export default function LoginPage() {
             />
           </div>
           {error && <p className="text-red-400 text-sm">{error}</p>}
-          <button
-            type="submit"
-            className="w-full bg-accent text-white py-2 rounded-lg hover:bg-accent-dim transition-colors"
-          >
-            Sign In
-          </button>
+
+          <div className="space-y-3">
+            <button
+              type="submit"
+              className="w-full bg-accent text-white py-2 rounded-lg hover:bg-accent-dim transition-colors"
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              className="w-full border border-accent/30 text-accent py-2 rounded-lg hover:bg-accent/10 transition-colors text-sm"
+            >
+              🚀 Try Demo Account
+            </button>
+          </div>
         </form>
         <p className="mt-4 text-sm text-text-secondary text-center">
           Don’t have an account?{" "}

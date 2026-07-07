@@ -22,8 +22,8 @@ export default function SignupPage() {
     if (error) {
       setError(error.message);
     } else {
-      setMessage("Account created! Please check your email for confirmation.");
-      setTimeout(() => router.push("/login"), 3000);
+      // ✅ Success – show message, do NOT auto‑redirect
+      setMessage("✅ Account created! Please check your email to confirm your account. After confirmation, you can sign in.");
     }
   };
 
